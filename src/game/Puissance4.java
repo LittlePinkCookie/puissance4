@@ -3,31 +3,32 @@ package game;
 public class Puissance4 {
 
 	//Attributs
+	public final static int WIDTH  = 7;
+	public final static int HEIGHT = 6;
+	
+	public final static char PAWN_1 = 'X';
+	public final static char PAWN_2 = 'Y';
+	
 	private char[][] grid;
 	private char     winner;
 	private boolean  win;
+	private int      round;
 	
 	
 	//Constructeur
 	public Puissance4() {
-		this.grid = new char[][] {{ '#', '#', '#', '#', '#', '#', '#', '#', '#'},
-								  { '#', ' ', ' ', ' ', ' ', ' ', ' ', ' ', '#'},
-								  { '#', ' ', ' ', ' ', ' ', ' ', ' ', ' ', '#'},
-								  { '#', ' ', ' ', ' ', ' ', ' ', ' ', ' ', '#'},
-								  { '#', ' ', ' ', ' ', ' ', ' ', ' ', ' ', '#'},
-								  { '#', ' ', ' ', ' ', ' ', ' ', ' ', ' ', '#'},
-								  { '#', ' ', ' ', ' ', ' ', ' ', ' ', ' ', '#'},
-								  { '#', '#', '#', '#', '#', '#', '#', '#', '#'}};
+		init();
 	}
 	
 	
-	/**
+	/*
 	 * Place un pion dans la grille
-	 * @param pawn type de pion
-	 * @param col colonne cible
-	 * @return Possibilité de le placer
 	 */
-	public boolean placer(char pawn, int col) {
+	public boolean placer(int col) {
+		
+		char pawn;
+		if (this.round == 0) pawn = Puissance4.PAWN_1;
+		else                 pawn = Puissance4.PAWN_2;
 		
 		int indLig = 1;
 		col++;
@@ -41,9 +42,10 @@ public class Puissance4 {
 		
 		if (indLig >= 1) {
 			this.grid[indLig][col] = pawn;
-			if (testVictory(pawn, indLig, col)) {
+			if (testVictory(pawn, indLig, col))
 				win(pawn);
-			}
+			
+			this.round = (this.round+1) % 2;
 			return true;
 		} else {
 			return false;
@@ -51,9 +53,8 @@ public class Puissance4 {
 	}
 	
 	
-	/**
+	/*
 	 * Termine le jeu
-	 * @param winner 
 	 */
 	private void win(char winner) {
 		this.winner = winner;
@@ -62,14 +63,8 @@ public class Puissance4 {
 	
 	
 	
-	/**
+	/*
 	 * Compte le nombre de pions dans la direction donnée
-	 * @param pawn type de pion
-	 * @param lig position en ordonnée du pion posé
-	 * @param col position en abscisse du pion posé
-	 * @param dirLig direction en ordonnée
-	 * @param dirCol direction en abscisse
-	 * @return Nombre de pions identiques
 	 */
 	private int nbPawnDirection(char pawn, int lig, int col, int dirLig, int dirCol) {
 		int l, c;
@@ -97,11 +92,8 @@ public class Puissance4 {
 	}
 	
 	
-	/**
+	/*
 	 * Compare deux valeurs
-	 * @param a valeur 1
-	 * @param b valeur 2
-	 * @return La plus grande des deux
 	 */
 	private int maxPawn(int a, int b) {
 		if (a > b) return a;
@@ -109,12 +101,8 @@ public class Puissance4 {
 	}
 
 	
-	/**
+	/*
 	 * Test si le placement du pion entraîne la victoire
-	 * @param pawn type de pion
-	 * @param lig position en ordonnée du pion
-	 * @param col position en abscisse du pion
-	 * @return Victoire
 	 */
 	public boolean testVictory(char pawn, int lig, int col) {
 		
@@ -125,12 +113,33 @@ public class Puissance4 {
 	}
 	
 	
+	/*
+	 * (ré)initialise le jeu
+	 */
+	public void init() {
+		this.grid = new char[][] {{ '#', '#', '#', '#', '#', '#', '#', '#', '#'},
+								  { '#', ' ', ' ', ' ', ' ', ' ', ' ', ' ', '#'},
+								  { '#', ' ', ' ', ' ', ' ', ' ', ' ', ' ', '#'},
+								  { '#', ' ', ' ', ' ', ' ', ' ', ' ', ' ', '#'},
+								  { '#', ' ', ' ', ' ', ' ', ' ', ' ', ' ', '#'},
+								  { '#', ' ', ' ', ' ', ' ', ' ', ' ', ' ', '#'},
+								  { '#', ' ', ' ', ' ', ' ', ' ', ' ', ' ', '#'},
+								  { '#', '#', '#', '#', '#', '#', '#', '#', '#'}};
+								  
+		this.round  = 0;
+		this.win    = false;
+		
+	}
+	
+	
 	
 	//=====================//
 	// ACCESSEURS          //
 	//=====================//
-	public boolean isWon()     { return this.win;    }
-	public char    getWinner() { return this.winner; }
+	public boolean isWon()      { return this.win;    }
+	public char    getWinner()  { return this.winner; }
+	public int     getRound()   { return this.round;  }
+	public char[][] getGrille() { return this.grid;   }
 	
 	
 	
@@ -146,27 +155,5 @@ public class Puissance4 {
 		}
 		
 		return s;
-	}
-	
-	
-	
-	
-	
-	
-	public static void main(String[] args) {
-		Puissance4 p = new Puissance4();
-		
-		p.placer('Y', 0);
-		p.placer('Y', 0);
-		p.placer('Y', 1);
-		p.placer('Y', 1);
-		p.placer('Y', 1);
-		p.placer('Y', 1);
-		
-		
-		if (p.isWon())
-			System.out.println("Le joueur " + p.getWinner() + " a gagné");
-
-		System.out.println(p);
 	}
 }
